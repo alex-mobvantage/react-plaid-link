@@ -73,8 +73,12 @@ const PlaidLink = React.createClass({
     // Button Class names as a String
     className: PropTypes.string,
 
-    // ApiVersion flag to use new version of Plaid API
+    // A function to render the component.
+    // When specified, buttonText, style, and className are ignored.
+    // Assumes the rendered component is able to fire click events.
+    renderComponent: PropTypes.func,
 
+    // ApiVersion flag to use new version of Plaid API
     apiVersion: PropTypes.string
   },
   getInitialState: function() {
@@ -123,6 +127,11 @@ const PlaidLink = React.createClass({
     }
   },
   render: function() {
+    if (this.props.renderComponent){
+      const cmp = this.props.renderComponent();
+      return React.cloneElement(cmp, { onClick: this.handleOnClick }); // we need to clone since props are frozen
+    }
+
     return (
       <button
         onClick={this.handleOnClick}
